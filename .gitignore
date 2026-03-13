@@ -17,3 +17,10 @@ env/
 Thumbs.db
 
 .env
+
+# Terraform (state + local cache)
+**/.terraform/
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/crash.log
+**/crash.*.log

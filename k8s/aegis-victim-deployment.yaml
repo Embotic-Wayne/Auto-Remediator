@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegis-victim
+  labels:
+    app: aegis-victim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aegis-victim
+  template:
+    metadata:
+      labels:
+        app: aegis-victim
+    spec:
+      containers:
+        - name: aegis-victim
+          image: victim-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
