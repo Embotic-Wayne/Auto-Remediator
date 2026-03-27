@@ -14,6 +14,7 @@ spec:
       labels:
         app: remediation-service
     spec:
+      serviceAccountName: remediation-sa
       containers:
         - name: remediation-service
           image: remediation-service:latest
