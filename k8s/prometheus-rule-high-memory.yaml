@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: aegis-victim-high-memory
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: aegis-victim.rules
+      rules:
+        - alert: HighMemoryUsage
+          expr: sum by (namespace, pod) (container_memory_working_set_bytes{namespace="default",pod=~"aegis-victim-.*",container!="",container!="POD"}) > 104857600
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Victim pod memory above 100Mi"
+            description: "Pod {{ $labels.pod }} in {{ $labels.namespace }} working set exceeds 100Mi for 1m."

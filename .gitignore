@@ -24,3 +24,7 @@ Thumbs.db
 **/terraform.tfstate.*
 **/crash.log
 **/crash.*.log
+infra/kind/*config*
+
+# Helm local overrides (secrets / machine-specific)
+helm/*.local.yaml

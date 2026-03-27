@@ -1,0 +1,32 @@
+# Override for kube-prometheus-stack: route HighMemoryUsage to remediation webhook.
+# Apply (preserve prior Helm customizations):
+#   helm upgrade monitoring prometheus-community/kube-prometheus-stack -n monitoring --reuse-values -f helm/values-alertmanager-webhook.yaml
+#
+# First install or no prior edits:
+#   helm upgrade monitoring prometheus-community/kube-prometheus-stack -n monitoring -f helm/values-alertmanager-webhook.yaml
+
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: "null"
+      group_by:
+        - alertname
+        - namespace
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      routes:
+        - match:
+            alertname: HighMemoryUsage
+          receiver: remediation-webhook
+        - match:
+            alertname: Watchdog
+          receiver: "null"
+    receivers:
+      - name: "null"
+      - name: remediation-webhook
+        webhook_configs:
+          - url: "http://remediation-service.default.svc.cluster.local:8000/alerts"
+            send_resolved: true
